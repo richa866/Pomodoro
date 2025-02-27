@@ -45,6 +45,14 @@ const updateList = (taskName, roundsCompleted) => {
   // Append the list item to the unordered list
 };
 
+const changeTime = (newPTime, newBTime) => {
+  userPomodoroTime = parseInt(newPTime, 10) * 60;
+  userBreakTime = parseInt(newBTime, 10) * 60;
+  pomodoroTime = userPomodoroTime;
+  breakTime = userBreakTime;
+  progressValue.textContent = formatingDisplay(pomodoroTime);
+};
+
 //formatting time display
 function formatingDisplay(number) {
   const minutes = Math.trunc(number / 60)
@@ -207,13 +215,7 @@ submit.addEventListener("click", () => {
   changeTime(newPTime.value, newBTime.value);
   modal.style.display = "none";
 });
-const changeTime = (newPTime, newBTime) => {
-  userPomodoroTime = parseInt(newPTime, 10) * 60;
-  userBreakTime = parseInt(newBTime, 10) * 60;
-  pomodoroTime = userPomodoroTime;
-  breakTime = userBreakTime;
-  progressValue.textContent = formatingDisplay(pomodoroTime);
-};
+
 cancel.addEventListener("click", () => {
   modal.style.display = "none";
 });
