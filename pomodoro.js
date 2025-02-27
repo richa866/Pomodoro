@@ -11,9 +11,15 @@ const viewList = document.querySelector(".view");
 const displayList = document.querySelector(".displayList");
 const ul = document.querySelector("ul");
 const rounds = document.querySelector(".rounds");
+const submit = document.querySelector(".Submit");
+const cancel = document.querySelector(".cancel");
+let newPTime = document.querySelector(".cycleTime");
+let newBTime = document.querySelector(".break");
 
 let pomodoroTime = 1 * 60;
 let breakTime = 0.5 * 60;
+let userPomodoroTime = 1 * 60;
+let userBreakTime = 0.5 * 60;
 let multFact = 360 / pomodoroTime; //remember to add this in css
 let timeInterval = null;
 let roundCompleted = false;
@@ -33,7 +39,8 @@ const stopTimer = () => {
 //updating the list
 const updateList = (taskName, roundsCompleted) => {
   let li = document.createElement("li"); // Create a list item
-  li.innerHTML = `<span>Task: ${taskName}</span> <span style="font-weight: bold;">Rounds Completed: ${roundsCompleted}</span>`;
+  li.classList.add("taskItem");
+  li.innerHTML = `Task: ${taskName}  Rounds Completed: ${roundsCompleted}`;
   ul.appendChild(li);
   // Append the list item to the unordered list
 };
@@ -86,7 +93,6 @@ const startBreak = () => {
   breakTime = 0.5 * 60;
   currentCycle.textContent = "BREAK";
   roundCompleted = true; // Mark round as completed
-
   timeInterval = setInterval(() => {
     breakTime--;
     countdown();
@@ -158,29 +164,56 @@ pause.addEventListener("click", () => {
   paused = true;
 });
 
+const roundCount = (nameOfTask) => {
+  let taskFound = false;
+
+  tasks.forEach((task) => {
+    if (task.name === nameOfTask) {
+      task.rounds++;
+      count = task.rounds; // Update count based on task rounds
+      taskFound = true;
+    }
+  });
+
+  if (!taskFound) {
+    count = 1;
+    tasks.push({ name: nameOfTask, rounds: count });
+  }
+
+  updateList(nameOfTask, count);
+  rounds.textContent = `Rounds completed: ${count}`;
+};
 //RESETTING ALL THE VALUES AND UPDATING THEM IN THE LIST
 const resetPomodoro = () => {
   if (roundCompleted == false) return;
-
   console.log("entereed the reset loop");
   roundCompleted = false;
   paused = false;
   timeInterval = null;
-  pomodoroTime = 1 * 60;
-  breakTime = 0.5 * 60;
+  pomodoroTime = userPomodoroTime;
+  breakTime = userBreakTime;
   clearInterval(timeInterval);
   currentCycle.textContent = "POMODORO";
   progressValue.textContent = formatingDisplay(pomodoroTime);
-  //RESETTING THE FLAGS
-
-  //COUNTING THE ROUNDS
-  count++;
-  console.log(count);
-  rounds.textContent = `Rounds completed: ${count}`; //updating the value
-  tasks.push({ name: pomodoroName.textContent, rounds: count });
-  console.log(tasks);
-  updateList(pomodoroName.textContent, count);
+  roundCount(pomodoroName.textContent);
   console.log(
     `Reset completed - Pomodoro: ${pomodoroTime}s, Break: ${breakTime}s, Rounds: ${count}`
   );
 };
+progressValue.addEventListener("dblclick", () => {
+  modal.style.display = "block";
+});
+submit.addEventListener("click", () => {
+  changeTime(newPTime.value, newBTime.value);
+  modal.style.display = "none";
+});
+const changeTime = (newPTime, newBTime) => {
+  userPomodoroTime = parseInt(newPTime, 10) * 60;
+  userBreakTime = parseInt(newBTime, 10) * 60;
+  pomodoroTime = userPomodoroTime;
+  breakTime = userBreakTime;
+  progressValue.textContent = formatingDisplay(pomodoroTime);
+};
+cancel.addEventListener("click", () => {
+  modal.style.display = "none";
+});

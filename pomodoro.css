@@ -1,7 +1,6 @@
 body{
     /* display: grid; */
-background-color: black;
-color: white;
+    background-color: #e7c6ff;
 }
 .displayList{
     display: grid;
@@ -23,9 +22,10 @@ header{
     gap: 1rem;
     width: 30%;
     height: 90%;
-    border: 3px solid black;
+   
     padding: 1rem;
     margin-left: 700px;
+    margin-top: 100px;
 }
 .card{
     display: flex;
@@ -43,10 +43,10 @@ header{
    align-items: center;
 }
 .displayCurrentCycle{
-    width: 25%;
-    padding: 0.2rem;
-    color: rgb(255, 255, 255);
-    font-size: 1.2rem;
+    width: 35%;
+    padding: 0.3rem;
+    color: #7b2cbf;
+    font-size: 1.6rem;
     background-color: transparent;
     border: 3px solid rgb(255, 254, 254) ;
     border-radius: 1rem;
@@ -62,7 +62,6 @@ height: 182px;
 padding: 4rem;
 border-radius: 50%;
 background-color:blue;
-
 }
 .innerProgressBar{
     display: flex;
@@ -71,16 +70,23 @@ align-items: center;
     width: 272px;
     height: 272px; 
     border-radius: 50%;
-    background-color: black;
+    background-color: #efd9f7;
     position: relative;
     left: 158px;
     bottom:340px;
 
 }
 .progressValue{
-    font-size: 50px;
+    font-size:3rem;
+    font-weight: 545;
+    color: #7b2cbf;
 }
-
+.rounds{
+    font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-weight:400;
+  font-style: normal;
+}
 
 
 
@@ -101,11 +107,13 @@ bottom:250px;
     font-size: 1.2rem;
     border-radius: 1rem;
     background-color: rgb(113, 176, 19);
+    border: none;
 }
 .start:hover{
     color:rgb(131, 189, 43) ;
     border: 4px solid rgb(131, 189, 43) ;
     background-color: transparent;
+  
 }
 .stop{
     padding: 1rem;
@@ -113,6 +121,7 @@ bottom:250px;
     font-size: 1.2rem;
     border-radius: 1rem;
     background-color: red;
+    border: none;
 }
 .stop:hover{
     color:red ;
@@ -124,6 +133,7 @@ bottom:250px;
     font-size: 1.2rem;
     border-radius: 1rem;
     background-color: rgb(215, 189, 57);
+    border: none;
 }
 .pause:hover{
     color: rgb(215, 189, 57) ;
@@ -134,7 +144,6 @@ bottom:250px;
 /* MODAL */
 .modal{
     display: none;
-    /* display: flex;ś */
     position: absolute;
     width: 100%;
     height: 100%;
@@ -149,19 +158,19 @@ bottom:250px;
     top:250px;
     left: 700px;
     display: grid;
+    gap: 1rem;
     width: 30%;
-    height: 30%;
-    padding: 3rem;
+    height: 35%;
+    padding: 1.5rem;
     border: 5px solid #D65780;
     border-radius: 1rem;
+    background-color: antiquewhite;
 }
-.modal_msg{
-    text-align: center;
-    color:#89d758;
-  font-family: "Playfair Display", serif;
-  font-optical-sizing: auto;
-  font-weight: 500;
-  font-style: normal;
+.cycleTime,.break{
+  font-size: 1rem;
+  padding: 1.3rem;
+  height: 20%;
+  border-radius: 1rem;
 }
 .modal_opt{
     display: flex;
@@ -171,14 +180,102 @@ bottom:250px;
     height: 20%;
     margin-top: 2rem;
 }
-.yes,.no{
-    align-items: center;
+.Submit,.cancel{
+  align-items: center;
     padding: 1rem;
     width: 20%;
     padding: 1rem;
-    color: white;
+    color: black;
     font-size: 1.3rem;
     border: 4px solid #f5c4b8;
     border-radius: 1rem;
-    background-color: transparent;
+  
 }
+
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 64px; /* Collapsed Width */
+    background: #ffd6ff;
+    background-color: #c8b6ff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.4s ease-in-out;
+  }
+  
+  /* Expand sidebar on hover */
+  .sidebar:hover {
+    width: 270px;
+  }
+  
+  /* Sidebar Header */
+  .header {
+    display: flex;
+    align-items: center;
+    height: 72px;
+    padding: 0 16px;
+    background: rgba(0, 0, 0, 0.25);
+    gap: 12px;
+  }
+  
+  /* Sidebar Icon (Burger Menu) */
+  .burger {
+    color:white;
+    font-size: 1.2rem;
+    margin-left: 8px;
+  }
+  
+  /* Sidebar Title - Always Visible */
+  .header h1 {
+    color:white;
+    font-size: 1.2rem;
+    font-family: "Be Vietnam Pro", serif;
+    font-weight: 500;
+    font-style: normal;
+    margin: 0;
+    white-space: nowrap;
+    opacity: 1; 
+  }
+  
+  /* Sidebar Navigation */
+  .sidebar nav {
+    padding: 0 8px;
+  }
+  
+  /* Task Items - Initially Hidden */
+  .taskItem {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    width: 100%;
+    color: #231942;
+    font-size: 1.2rem;
+    font-family: "Be Vietnam Pro", serif;
+  font-weight: 500;
+  font-style: normal;
+    border-radius: 6px;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.2s ease-in-out;
+    cursor: pointer;
+    
+  }
+  
+  /* Task Items Hover Effect */
+  .taskItem:hover {
+    font-size: 1.25rem;
+    opacity: 1;
+  }
+  
+  /* Show Task Items when Sidebar is Hovered */
+  .sidebar:hover .taskItem {
+    opacity: 1;
+  }
+  ul{
+    display: grid;
+    gap: 1rem;
+  }
