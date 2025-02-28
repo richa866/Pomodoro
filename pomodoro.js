@@ -1,3 +1,4 @@
+//accessing elements from html
 const pomodoroName = document.querySelector(".pomodoroName");
 const currentCycle = document.querySelector(".displayCurrentCycle");
 const modal = document.querySelector(".modal");
@@ -18,6 +19,7 @@ let newBTime = document.querySelector(".break");
 
 let pomodoroTime = 1 * 60;
 let breakTime = 0.5 * 60;
+//default values
 let userPomodoroTime = 1 * 60;
 let userBreakTime = 0.5 * 60;
 let multFact = 360 / pomodoroTime; //remember to add this in css
@@ -31,23 +33,29 @@ let breakStopped = false;
 let pomodoroStopped = false;
 let paused = false;
 
+progressValue.textContent = formatingDisplay(pomodoroTime);
+
+//STOP TIMER
 const stopTimer = () => {
   clearInterval(timeInterval);
   timeInterval = null;
+  //null signifies that no timer is running.
+  // It prevents starting multiple timers when you click start multiple times.
 };
 
-//updating the list
+//UPDATING LIST
 const updateList = (taskName, roundsCompleted) => {
-  let li = document.createElement("li"); // Create a list item
+  let li = document.createElement("li");
   li.classList.add("taskItem");
   li.innerHTML = `Task: ${taskName}  Rounds Completed: ${roundsCompleted}`;
   ul.appendChild(li);
-  // Append the list item to the unordered list
 };
 
+//CHANGE TIME ACCORDING TO THE USER CHOICE
 const changeTime = (newPTime, newBTime) => {
   userPomodoroTime = parseInt(newPTime, 10) * 60;
   userBreakTime = parseInt(newBTime, 10) * 60;
+  //using parseInt as it ignores the decimals
   pomodoroTime = userPomodoroTime;
   breakTime = userBreakTime;
   progressValue.textContent = formatingDisplay(pomodoroTime);
@@ -69,26 +77,32 @@ pomodoroName.addEventListener("dblclick", () => {
   pomodoroName.innerHTML = ""; // clearing the previous value
   let newName = document.createElement("input");
   newName.classList.add("newName");
-  newName.value = pomodoroName.innerText; // new value = in the old value
+  newName.value = pomodoroName.innerText;
   pomodoroName.appendChild(newName);
   newName.style.cssText =
-    "background-color: transparent; font-size: 1.8rem; color: white;";
+    "background-color: transparent; font-size: 1.8rem; color: #7b2cbf;";
   newName.addEventListener("blur", () => {
-    pomodoroName.innerText = newName.value; // again changing the value
+    if (newName.value.trim() === "") {
+      pomodoroName.innerText = "POMODORO";
+    } else {
+      pomodoroName.innerText = newName.value;
+    }
   });
-  console.log(tasks);
 });
 
-// START POMODORO
 const startPomodoro = () => {
   if (!timeInterval) {
     timeInterval = setInterval(() => {
       if (!paused) {
-        pomodoroTime--;
-        countdown();
-        if (pomodoroTime <= 0) {
+        if ((currentCycle.value = "POMODORO" && pomodoroTime > 0)) {
+          pomodoroTime--;
+          countdown();
+          console.log("IN LOOP pom>0");
+        } else {
           stopTimer();
-          startBreak(); // Start the break timer
+          setTimeout(startBreak, 1000);
+          console.log("called break");
+          //calls the break function once the pomodoro ends
         }
       }
     }, 1000);
@@ -98,40 +112,50 @@ const startPomodoro = () => {
 //START BREAK
 const startBreak = () => {
   if (timeInterval) clearInterval(timeInterval);
-  breakTime = 0.5 * 60;
+  //if time interval is set clears it
   currentCycle.textContent = "BREAK";
-  roundCompleted = true; // Mark round as completed
+  //changes the display
+  console.log("entered the start break loop");
   timeInterval = setInterval(() => {
-    breakTime--;
-    countdown();
-    if (breakTime <= 0) {
-      stopTimer();
-      resetPomodoro(); // Reset for the next Pomodoro
+    if (!paused) {
+      if (breakTime > 0) {
+        breakTime--;
+        countdown();
+        console.log("entered the b>0");
+      } else {
+        stopTimer();
+        roundCompleted = true; //set the flag true
+        resetPomodoro(); //resets the cycle once it ends
+      }
     }
   }, 1000);
 };
 
 // Pause Pomodoro
 const pausePomodoro = () => {
-  stopTimer();
-  paused = true;
+  stopTimer(); //clears the interval
+  paused = true; //sets the flag true
+  console.log("paused");
 };
 
-//STOP POMODORO
 const stopPomodoro = () => {
   stopTimer();
-  progressValue.textContent = "25:00";
-  pomodoroTime = 1 * 60; // Reset the pomodoro time
-  console.log("pomooro stopped");
+  if (currentCycle.textContent === "BREAK") {
+    breakTime = formatingDisplay(breakTime);
+    //set the time to the initial one
+    breakStopped = true;
+    console.log("break stopped");
+  } else if (currentCycle.textContent === "POMODORO") {
+    pomodoroTime = formatingDisplay(pomodoroTime);
+    //set the time to the initial one
+    pomodoroStopped = true;
+    console.log("pomodoro stopped");
+  }
 };
-//null signifies that no timer is running.
-// It prevents starting multiple timers when you click start multiple times.
-// It helps manage the state of your timer logic cleanly.
-
 //COUNTDOWN FUNCTION
 const countdown = () => {
   if (pomodoroTime === 0 && currentCycle.textContent !== "BREAK") {
-    stopTimer();
+    stopTimer(); //clears the interval
     console.log("pomodorotime is 0");
     startBreak();
   }
@@ -145,32 +169,6 @@ const countdown = () => {
       ? formatingDisplay(breakTime)
       : formatingDisplay(pomodoroTime);
 };
-
-// to prevent negative values
-if (pomodoroTime < 0) pomodoroTime = 0;
-if (breakTime < 0) breakTime = 0;
-
-start.addEventListener("click", () => {
-  paused = false; // after pausing when you click on the start button again , it resets the flag to false , allowing to continue the countdwn
-  startPomodoro();
-  if (roundCompleted) resetPomodoro();
-});
-
-stop.addEventListener("click", () => {
-  stopPomodoro();
-  if (currentCycle.textContent === "BREAK") {
-    breakTime = 0.5 * 60;
-    breakStopped = true;
-  } else if (currentCycle.textContent === "POMODORO") {
-    pomodoroTime = 1 * 60;
-    pomodoroStopped = true;
-  }
-});
-
-pause.addEventListener("click", () => {
-  pausePomodoro();
-  paused = true;
-});
 
 const roundCount = (nameOfTask) => {
   let taskFound = false;
@@ -191,7 +189,7 @@ const roundCount = (nameOfTask) => {
   updateList(nameOfTask, count);
   rounds.textContent = `Rounds completed: ${count}`;
 };
-//RESETTING ALL THE VALUES AND UPDATING THEM IN THE LIST
+
 const resetPomodoro = () => {
   if (roundCompleted == false) return;
   console.log("entereed the reset loop");
@@ -208,6 +206,36 @@ const resetPomodoro = () => {
     `Reset completed - Pomodoro: ${pomodoroTime}s, Break: ${breakTime}s, Rounds: ${count}`
   );
 };
+
+// to prevent negative values
+if (pomodoroTime < 0) pomodoroTime = 0;
+if (breakTime < 0) breakTime = 0;
+
+start.addEventListener("click", () => {
+  console.log("start");
+  paused = false;
+  // if paused sets the flag to false
+  if (currentCycle.textContent === "BREAK") {
+    startBreak();
+    //when the break is paused and the start button is clicked resumes the break
+  } else {
+    startPomodoro();
+    //starts/resumes the pomodoro depending on the case
+  }
+  if (roundCompleted) resetPomodoro();
+  //calls the reset function if the round is completed
+});
+
+stop.addEventListener("click", () => {
+  stopPomodoro();
+});
+
+pause.addEventListener("click", () => {
+  pausePomodoro();
+});
+
+//RESETTING ALL THE VALUES AND UPDATING THEM IN THE LIST
+
 progressValue.addEventListener("dblclick", () => {
   modal.style.display = "block";
 });

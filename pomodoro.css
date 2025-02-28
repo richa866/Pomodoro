@@ -1,5 +1,4 @@
 body{
-    /* display: grid; */
     background-color: #e7c6ff;
 }
 .displayList{
@@ -22,7 +21,7 @@ header{
     gap: 1rem;
     width: 30%;
     height: 90%;
-   
+    background-color: #e7c6ff;
     padding: 1rem;
     margin-left: 700px;
     margin-top: 100px;
@@ -87,6 +86,7 @@ align-items: center;
   font-weight:400;
   font-style: normal;
 }
+
 
 
 
@@ -160,17 +160,25 @@ bottom:250px;
     display: grid;
     gap: 1rem;
     width: 30%;
-    height: 35%;
+    height: 40%;
     padding: 1.5rem;
     border: 5px solid #D65780;
     border-radius: 1rem;
-    background-color: antiquewhite;
+    background-color: #f9dceb;
+    font-size: 0.9rem;
+    font-family: "Merriweather", serif;
+  font-weight: 300;
+  font-style: italic;
 }
 .cycleTime,.break{
-  font-size: 1rem;
+  font-size: 1.3rem;
+  font-family: "Itim", cursive;
+  font-weight: 400;
+  font-style: normal;
   padding: 1.3rem;
   height: 20%;
   border-radius: 1rem;
+  border: none;
 }
 .modal_opt{
     display: flex;
@@ -185,11 +193,18 @@ bottom:250px;
     padding: 1rem;
     width: 20%;
     padding: 1rem;
-    color: black;
+    color: #ab51e3;
     font-size: 1.3rem;
     border: 4px solid #f5c4b8;
     border-radius: 1rem;
+    font-family: "Itim", cursive;
+    font-weight: 400;
+    font-style: normal;
   
+}
+.Submit:hover,.cancel:hover{
+  border: 4px solid #ab51e3;
+  color: #D65780;
 }
 
 
