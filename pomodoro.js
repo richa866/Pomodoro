@@ -29,8 +29,7 @@ let resetDone = false;
 
 const tasks = [];
 let count = 0;
-let breakStopped = false;
-let pomodoroStopped = false;
+let Stopped = false;
 let paused = false;
 
 progressValue.textContent = formatingDisplay(pomodoroTime);
@@ -139,18 +138,11 @@ const pausePomodoro = () => {
 };
 
 const stopPomodoro = () => {
+  console.log("Entered stop pom loop");
   stopTimer();
-  if (currentCycle.textContent === "BREAK") {
-    breakTime = formatingDisplay(breakTime);
-    //set the time to the initial one
-    breakStopped = true;
-    console.log("break stopped");
-  } else if (currentCycle.textContent === "POMODORO") {
-    pomodoroTime = formatingDisplay(pomodoroTime);
-    //set the time to the initial one
-    pomodoroStopped = true;
-    console.log("pomodoro stopped");
-  }
+  Stopped = true;
+  resetPomodoro();
+  console.log("called the reset");
 };
 //COUNTDOWN FUNCTION
 const countdown = () => {
@@ -191,20 +183,26 @@ const roundCount = (nameOfTask) => {
 };
 
 const resetPomodoro = () => {
-  if (roundCompleted == false) return;
   console.log("entereed the reset loop");
-  roundCompleted = false;
-  paused = false;
-  timeInterval = null;
-  pomodoroTime = userPomodoroTime;
-  breakTime = userBreakTime;
-  clearInterval(timeInterval);
-  currentCycle.textContent = "POMODORO";
-  progressValue.textContent = formatingDisplay(pomodoroTime);
-  roundCount(pomodoroName.textContent);
-  console.log(
-    `Reset completed - Pomodoro: ${pomodoroTime}s, Break: ${breakTime}s, Rounds: ${count}`
-  );
+  if (roundCompleted || Stopped) {
+    console.log("checked cond");
+    roundCompleted = false;
+    paused = false;
+    pomodoroTime = userPomodoroTime;
+    breakTime = userBreakTime;
+    clearInterval(timeInterval);
+    timeInterval = null;
+    currentCycle.textContent = "POMODORO";
+    progressValue.textContent = formatingDisplay(pomodoroTime);
+    if (!Stopped) {
+      roundCount(pomodoroName.textContent);
+    }
+    Stopped = false;
+
+    console.log(
+      `Reset completed - Pomodoro: ${pomodoroTime}s, Break: ${breakTime}s, Rounds: ${count}`
+    );
+  }
 };
 
 // to prevent negative values
@@ -228,6 +226,7 @@ start.addEventListener("click", () => {
 
 stop.addEventListener("click", () => {
   stopPomodoro();
+  console.log("stopped");
 });
 
 pause.addEventListener("click", () => {
