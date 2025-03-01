@@ -31,6 +31,7 @@ const tasks = [];
 let count = 0;
 let Stopped = false;
 let paused = false;
+let taskFound = false;
 
 progressValue.textContent = formatingDisplay(pomodoroTime);
 
@@ -44,12 +45,19 @@ const stopTimer = () => {
 
 //UPDATING LIST
 const updateList = (taskName, roundsCompleted) => {
-  let li = document.createElement("li");
-  li.classList.add("taskItem");
-  li.innerHTML = `Task: ${taskName}  Rounds Completed: ${roundsCompleted}`;
-  ul.appendChild(li);
-};
+  let existingTask = Array.from(ul.querySelectorAll("li")).find((li) =>
+    li.textContent.startsWith(`Task: ${taskName} |`)
+  );
 
+  if (existingTask) {
+    existingTask.textContent = `Task: ${taskName} | Rounds Completed: ${roundsCompleted}`;
+  } else {
+    let li = document.createElement("li");
+    li.classList.add("taskItem");
+    li.textContent = `Task: ${taskName} | Rounds Completed: ${roundsCompleted}`;
+    ul.appendChild(li);
+  }
+};
 //CHANGE TIME ACCORDING TO THE USER CHOICE
 const changeTime = (newPTime, newBTime) => {
   userPomodoroTime = parseInt(newPTime, 10) * 60;
@@ -163,23 +171,22 @@ const countdown = () => {
 };
 
 const roundCount = (nameOfTask) => {
-  let taskFound = false;
-
-  tasks.forEach((task) => {
-    if (task.name === nameOfTask) {
-      task.rounds++;
-      count = task.rounds; // Update count based on task rounds
-      taskFound = true;
-    }
-  });
-
-  if (!taskFound) {
-    count = 1;
-    tasks.push({ name: nameOfTask, rounds: count });
+  let task = tasks.find(
+    (task) => task.name.toLowerCase() === nameOfTask.toLowerCase()
+  );
+  if (task) {
+    task.rounds++; // Increment existing task
+    console.log("Task found:", task.name, task.rounds);
+    nameOfTask = task.name; // Keep original casing
+    taskFound = true;
+  } else {
+    console.log("Task not found, adding:", nameOfTask);
+    task = { name: nameOfTask, rounds: 1 }; // Add new task with the first entered casing
+    tasks.push(task);
   }
 
-  updateList(nameOfTask, count);
-  rounds.textContent = `Rounds completed: ${count}`;
+  updateList(task.name, task.rounds); // Use the stored task name
+  rounds.textContent = `Rounds completed: ${task.rounds}`;
 };
 
 const resetPomodoro = () => {
