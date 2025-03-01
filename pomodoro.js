@@ -219,10 +219,6 @@ const resetPomodoro = () => {
   }
 };
 
-// to prevent negative values
-if (pomodoroTime < 0) pomodoroTime = 0;
-if (breakTime < 0) breakTime = 0;
-
 start.addEventListener("click", () => {
   console.log("start");
   paused = false;
