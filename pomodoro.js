@@ -29,7 +29,8 @@ let resetDone = false;
 
 const tasks = [];
 let count = 0;
-let Stopped = false;
+let breakStopped = false;
+let pomodoroStopped = false;
 let paused = false;
 let taskFound = false;
 
@@ -60,8 +61,8 @@ const updateList = (taskName, roundsCompleted) => {
 };
 //CHANGE TIME ACCORDING TO THE USER CHOICE
 const changeTime = (newPTime, newBTime) => {
-  userPomodoroTime = parseInt(newPTime, 10) * 60;
-  userBreakTime = parseInt(newBTime, 10) * 60;
+  userPomodoroTime = Math.round(parseFloat(newPTime, 10) * 60);
+  userBreakTime = Math.round(parseFloat(newBTime, 10) * 60);
   //using parseInt as it ignores the decimals
   pomodoroTime = userPomodoroTime;
   breakTime = userBreakTime;
@@ -131,8 +132,8 @@ const startBreak = () => {
         console.log("entered the b>0");
       } else {
         stopTimer();
-        roundCompleted = true; //set the flag true
-        resetPomodoro(); //resets the cycle once it ends
+        roundCompleted = true;
+        resetPomodoro();
       }
     }
   }, 1000);
@@ -148,7 +149,13 @@ const pausePomodoro = () => {
 const stopPomodoro = () => {
   console.log("Entered stop pom loop");
   stopTimer();
-  Stopped = true;
+  pomodoroTime = userPomodoroTime;
+  breakTime = userBreakTime;
+  if (currentCycle.textContent === "BREAK") {
+    breakStopped = true;
+  } else {
+    pomodoroStopped = true;
+  }
   resetPomodoro();
   console.log("called the reset");
 };
@@ -191,7 +198,7 @@ const roundCount = (nameOfTask) => {
 
 const resetPomodoro = () => {
   console.log("entereed the reset loop");
-  if (roundCompleted || Stopped) {
+  if (roundCompleted || breakStopped || pomodoroStopped) {
     console.log("checked cond");
     roundCompleted = false;
     paused = false;
@@ -201,7 +208,7 @@ const resetPomodoro = () => {
     timeInterval = null;
     currentCycle.textContent = "POMODORO";
     progressValue.textContent = formatingDisplay(pomodoroTime);
-    if (!Stopped) {
+    if (!pomodoroStopped || breakStopped) {
       roundCount(pomodoroName.textContent);
     }
     Stopped = false;
@@ -219,6 +226,7 @@ if (breakTime < 0) breakTime = 0;
 start.addEventListener("click", () => {
   console.log("start");
   paused = false;
+  breakStopped = pomodoroStopped = false;
   // if paused sets the flag to false
   if (currentCycle.textContent === "BREAK") {
     startBreak();
